@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const mongoose = require('mongoose')
 const slugify = require('slugify')
 const validator = require('validator')
@@ -18,6 +19,11 @@ const userSchema = mongoose.Schema({
     validate: [validator.isEmail, 'Please provide a valid Email'],
   },
   photo: String,
+  role: {
+    type: String,
+    enum: ['user', 'guide', 'lead-guide', 'admin'],
+    default: 'user',
+  },
   password: {
     type: String,
     required: [true, 'Please provide a psssword'],
@@ -37,6 +43,8 @@ const userSchema = mongoose.Schema({
     },
   },
   changedPasswordAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: String,
 })
 
 userSchema.pre('save', async function (next) {
@@ -48,6 +56,13 @@ userSchema.pre('save', async function (next) {
 
   // Delete passwordConfirm field
   this.passwordConfirm = undefined
+  next()
+})
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next()
+
+  this.passwordChangedAt = Date.now() - 1000
   next()
 })
 
@@ -69,6 +84,18 @@ userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
   }
   return false
 }
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex')
+
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex')
+  console.log(this.passwordResetToken, { resetToken })
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000
+  return resetToken
+}
+
 const User = mongoose.model('User', userSchema)
 
 module.exports = User
