@@ -1,3 +1,4 @@
+const crypto = require('crypto')
 const { promisify } = require('util')
 const jwt = require('jsonwebtoken')
 const User = require('../model/userModel')
@@ -10,6 +11,17 @@ const signToken = (id) => {
     expiresIn: process.env.JWT_EXPIRES_IN,
   })
 }
+
+const createAndSendToken = (user, userStatus, res) => {
+  const token = signToken(user._id)
+  res.status(userStatus).json({
+    status: 'success',
+    token,
+    data: {
+      user,
+    },
+  })
+}
 exports.signup = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -19,14 +31,8 @@ exports.signup = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     changedPasswordAt: req.body.changedPasswordAt,
   })
-  const token = signToken(newUser._id)
-  res.status(201).json({
-    status: 'success',
-    token,
-    data: {
-      user: newUser,
-    },
-  })
+
+  createAndSendToken(newUser, 201, res)
 })
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -44,11 +50,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) send token to the client
-  const token = signToken(user._id)
-  res.status(200).json({
-    status: 'success',
-    token,
-  })
+  createAndSendToken(user, 200, res)
 })
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -114,7 +116,6 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
       subject: 'Your password reset token (valid for only 10mins)',
       message,
     })
-    console.log('skldjfksjkj:w')
     res.status(200).json({
       status: 'success',
       message: 'Token sent to mail',
@@ -154,8 +155,25 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   // 3) Update changedPasswordAt property for the user
   // 4) Log the user in, send JWT
-  res.status(200).json({
-    status: 'success',
-    token,
-  })
+  createAndSendToken(user, 200, res)
+})
+
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  // 1) get user from the collection
+  const user = await User.findById(req.user.id).select('+password')
+  if (!user) {
+    return next(new AppError('user is not found', 401))
+  }
+  // 2) check if the POSTed password is correct
+  if (!(await user.correctPassword(req.body.curruntPassword, user.password))) {
+    return next(new AppError('Entered password is not correct', 401))
+  }
+
+  // 3) update the password
+  user.password = req.body.password
+  user.passwordConfirm = req.body.passwordConfirm
+  await user.save()
+
+  // 4) log the user in
+  createAndSendToken(user, 200, res)
 })
