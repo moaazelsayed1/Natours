@@ -5,6 +5,7 @@ const User = require('../model/userModel')
 const AppError = require('../utils/AppError')
 const catchAsync = require('../utils/catchAsync')
 const sendEmail = require('../utils/email')
+const { findByIdAndUpdate } = require('../model/userModel')
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -44,9 +45,12 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password', 400))
   }
   // 2) check if the email exists and password matches
-  const user = await User.findOne({ email }).select('+password')
+  const user = await User.findOne({ email }).select('+password +active')
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('Incorrect email or password', 401))
+  }
+  if (!user.active) {
+    await User.findByIdAndUpdate(user._id, { active: true })
   }
 
   // 3) send token to the client

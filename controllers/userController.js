@@ -2,12 +2,12 @@ const User = require('../model/userModel')
 const catchAsync = require('../utils/catchAsync')
 
 const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
-  Object.keys(obj).forEach(el => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
+  const newObj = {}
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el]
+  })
+  return newObj
+}
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find()
 
@@ -44,6 +44,15 @@ exports.updateMe = catchAsync(async (req, res, next) => {
     data: {
       user: updatedUser,
     },
+  })
+})
+
+exports.disableMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false })
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
   })
 })
 
