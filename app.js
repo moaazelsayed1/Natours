@@ -1,5 +1,6 @@
 const express = require('express')
 const morgan = require('morgan')
+const rateLimit = require('express-rate-limit')
 
 const app = express()
 
@@ -13,8 +14,15 @@ console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
 }
-app.use(express.json())
+// limit 100 req per an hour
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 100,
+  message: 'Too many requests from this IP, try agian later',
+})
+app.use('/api', limiter)
 
+app.use(express.json())
 app.use(express.static(`${__dirname}/public/`))
 
 app.use((req, res, next) => {
