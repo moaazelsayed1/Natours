@@ -9,7 +9,7 @@ router.post('/login', authController.login)
 router.post('/forgotPassword', authController.forgotPassword)
 router.patch('/resetPassword/:token', authController.resetPassword)
 
-router = router.use(authController.protect)
+router.use(authController.protect)
 
 router.get('/me', userController.getMe, userController.getUser)
 
@@ -18,6 +18,7 @@ router.patch('/updateMe', userController.updateMe)
 router.delete('/disableMe', userController.disableMe)
 
 router.use(authController.restrictTo('admin'))
+
 router
   .route('/')
   .get(userController.getAllUsers)
