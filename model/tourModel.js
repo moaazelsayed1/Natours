@@ -119,8 +119,8 @@ tourSchema.virtual('durationWeeks').get(function () {
 tourSchema.virtual('reviews', {
   ref: 'Review',
   foreignField: 'tour',
-  localField: '_id'
-});
+  localField: '_id',
+})
 // DOCUMENT MIDDLEWARE function: runs before .save and .create only
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true })
