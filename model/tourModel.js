@@ -36,7 +36,7 @@ const tourSchema = mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
-      set: val => Math.round(val*10)/10
+      set: (val) => Math.round(val * 10) / 10,
     },
     reatingsQuantity: {
       type: Number,
@@ -114,7 +114,8 @@ const tourSchema = mongoose.Schema(
 )
 
 tourSchema.index({ price: 1, ratingsAverage: -1 })
-tourSchema.index({slug: 1})
+tourSchema.index({ slug: 1 })
+tourSchema.index({ startLocation: '$2dsphere' })
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7
 })
