@@ -1,3 +1,4 @@
+const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
 const rateLimit = require('express-rate-limit')
@@ -7,6 +8,11 @@ const xss = require('xss-clean')
 const hpp = require('hpp')
 
 const app = express()
+
+app.set('view engine', 'pug')
+app.set('views', path.join(__dirname, 'views'))
+// serving static files
+app.use(express.static(path.join(__dirname, 'public')))
 
 const AppError = require('./utils/AppError')
 const globalErrorHandler = require('./controllers/errorController')
@@ -38,9 +44,6 @@ app.use(mongoSanitize())
 // data sanitization against XSS
 app.use(xss())
 
-// serving static files
-app.use(express.static(`${__dirname}/public/`))
-
 // prevent parameter pullution
 app.use(
   hpp({
@@ -62,6 +65,13 @@ app.use((req, res, next) => {
   next()
 })
 
+app.get('/', (req, res, next) => {
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'moaaz',
+  })
+  next()
+})
 /* console.log(3) */
 // mounting the routers
 app.use('/api/v1/tours', tourRouter)
