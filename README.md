@@ -1,4 +1,4 @@
- <h1 align=center>Tour booking site built using NodeJS.</h1>
+ <h1 align=center>Tour booking site built with Node.js.</h1>
 
 ## API
 
@@ -6,7 +6,7 @@
 
 ## Build With
 
-- [NodeJS](https://nodejs.org/en/) - JS runtime environment.
+- [Node.js](https://nodejs.org/en/) - JS runtime environment.
 - [Express](http://expressjs.com/) - web framework.
 - [Mongoose](https://mongoosejs.com/) - Object Data Modelling library.
 - [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database service.
