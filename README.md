@@ -1,4 +1,4 @@
-# Tour booking site built using NodeJS.
+ <h1 style="text-align: center;">Tour booking site built using NodeJS.</h1>
 
 ## API
 
@@ -9,11 +9,11 @@
 - [NodeJS](https://nodejs.org/en/) - JS runtime environment.
 - [Express](http://expressjs.com/) - web framework.
 - [Mongoose](https://mongoosejs.com/) - Object Data Modelling library.
-- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database service
-- [Pug](https://pugjs.org/api/getting-started.html) - template engine
-- [JSON Web Token](https://jwt.io/) - Security token
+- [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) - Cloud database service.
+- [Pug](https://pugjs.org/api/getting-started.html) - template engine.
+- [JSON Web Token](https://jwt.io/) - Security token.
 - [ParcelJS](https://parceljs.org/) - zero configuration build tool for the web.
-- [Postman](https://www.getpostman.com/) - API testing
+- [Postman](https://www.getpostman.com/) - API testing.
 
 ## To-do
 
