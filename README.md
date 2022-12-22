@@ -1,4 +1,4 @@
- <h1 style="text-align: center;">Tour booking site built using NodeJS.</h1>
+ <h1 align=center>Tour booking site built using NodeJS.</h1>
 
 ## API
 
