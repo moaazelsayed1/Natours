@@ -21,7 +21,9 @@ router
     authController.restrictTo('user', 'admin'),
     reviewController.updateReview
   )
-  .delete(    authController.restrictTo('user', 'admin'),
-reviewController.deleteReview)
+  .delete(
+    authController.restrictTo('user', 'admin'),
+    reviewController.deleteReview
+  )
 
 module.exports = router
