@@ -17,7 +17,7 @@
 
 ## To-do
 
-- [ ] Building the User Account Page.
+- [X] Building the User Account Page.
 - [ ] Allowing users to Upload images Using [Multer](https://github.com/expressjs/multer).
 - [ ] Building a Complex Email Handler.
 - [ ] Integrating [Stripe](https://stripe.com/) into the Back-End.

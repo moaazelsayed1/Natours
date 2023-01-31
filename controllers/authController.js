@@ -137,6 +137,7 @@ exports.isLoggedIn = async (req, res, next) => {
         return next()
       }
 
+      req.user = currentUser
       res.locals.user = currentUser
       return next()
     } catch (err) {
@@ -228,6 +229,8 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
     return next(new AppError('user is not found', 401))
   }
   // 2) check if the POSTed password is correct
+  /* console.log(req.body.curruntPassword) */
+  /* console.log(user.password) */
   if (!(await user.correctPassword(req.body.curruntPassword, user.password))) {
     return next(new AppError('Entered password is not correct', 401))
   }
