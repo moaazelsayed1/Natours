@@ -17,6 +17,7 @@ const multerStorage = multer.diskStorage({
   },
 })
 
+// about to add resize
 const multerFilter = (req, file, cb) => {
   if (file.startsWith('image')) {
     cb(null, true)
@@ -56,7 +57,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   // 2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email')
-  if(req.file) filterObj.photo = req.file.filename
+  if (req.file) filterObj.photo = req.file.filename
 
   // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
