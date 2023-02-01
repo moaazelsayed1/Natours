@@ -1,26 +1,58 @@
 const nodemailer = require('nodemailer')
+const pug = require('pug')
+const htmlToText = require('html-to-text')
 
-const sendEmail = async (options) => {
-  // 1) create transporter
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    // activate less secure app in gmail
-    auth: {
-      user: process.env.EMAIL_USERNAME,
-      pass: process.env.EMAIL_PASSWORD,
-    },
-  })
-  // 2) define mail options
-  const mailOptions = {
-    from: 'Moaaz Elsayed <me@moaaz.io',
-    to: options.email,
-    subject: options.subject,
-    text: options.message,
+module.exports = class Email {
+  constructor(user, url) {
+    this.to = user.email
+    this.url = url
+    this.firstName = user.name.split(' ')[0]
+    this.from = `Moaaz Elsayed <${process.env.EMAIL_FROM}>`
   }
 
-  // 3) send email
-  await transporter.sendMail(mailOptions)
-}
+  newTransport() {
+    if (process.env.NODE_ENV === 'production') {
+      return 1
+    }
 
-module.exports = sendEmail
+    // 1) create transporter
+    return nodemailer.createTransport({
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      // activate less secure app in gmail
+      secureconnection: false, // use ssl
+      auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD,
+      },
+      tls: {
+        ciphers: 'SSLv3',
+      },
+    })
+  }
+
+  async send(template, subject) {
+    const html = pug.renderFile(
+      `${__dirname}/../views/emails/${template}.pug`,
+      {
+        firstName: this.firstName,
+        url: this.url,
+        subject,
+      }
+    )
+
+    const mailOptions = {
+      from: this.from,
+      to: this.to,
+      subject,
+      html,
+      text: htmlToText.convert(html),
+    }
+
+    await this.newTransport().sendMail(mailOptions)
+  }
+
+  async sendWelcome() {
+    await this.send('welcome', 'Welcome to the Natours family!')
+  }
+}
