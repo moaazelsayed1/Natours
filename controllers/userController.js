@@ -2,34 +2,40 @@ const User = require('../model/userModel')
 const catchAsync = require('../utils/catchAsync')
 const factory = require('./handlerFactory')
 const multer = require('multer')
+const sharp = require('sharp')
 const AppError = require('../utils/AppError')
 const { diskStorage } = require('multer')
 
-const upload = multer({ dest: 'pubic/img/users' })
+/* const upload = multer({ dest: 'public/img/users' }) */
 
-const multerStorage = multer.diskStorage({
-  distination: (req, file, cb) => {
-    cb(null, 'public/img/users')
-  },
-  filename: (req, file, cb) => {
-    const extension = file.mimetype.split('/')[1]
-    cb(null, `user-${req.user.id}-${Date.now()}.${extension}`)
-  },
-})
+/* const multerStorage = multer.diskStorage({ */
+/*   distination: (req, file, cb) => { */
+/*     cb(null, 'public/img/users') */
+/*   }, */
+/*   filename: (req, file, cb) => { */
+/*     const extension = file.mimetype.split('/')[1] */
+/*     cb(null, `user-${req.user.id}-${Date.now()}.${extension}`) */
+/*   }, */
+/* }) */
+
+// store the file to memory (req.file.buffer) so we can resize it before saving to the database
+const multerStorage = multer.memoryStorage()
 
 // about to add resize
 const multerFilter = (req, file, cb) => {
-  if (file.startsWith('image')) {
+  if (file.mimetype.startsWith('image')) {
     cb(null, true)
   } else {
     cb(new AppError('Not an image! Please upload only images', 400), false)
   }
 }
 
-exports.uploadUserPhoto = upload.single({
+const upload = multer({
   storage: multerStorage,
   fileFilter: multerFilter,
 })
+
+exports.uploadUserPhoto = upload.single('photo')
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {}
@@ -44,6 +50,20 @@ exports.getMe = (req, res, next) => {
   next()
 }
 
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next()
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`
+  console.log(`${req.file.filename}`)
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`)
+
+  next()
+})
 exports.updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
@@ -57,7 +77,7 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   // 2) Filtered out unwanted fields names that are not allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email')
-  if (req.file) filterObj.photo = req.file.filename
+  if (req.file) filteredBody.photo = req.file.filename;
 
   // 3) Update user document
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
