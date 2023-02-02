@@ -12,7 +12,13 @@ module.exports = class Email {
 
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
-      return 1
+      return nodemailer.createTransport({
+        service: 'SandGrid',
+        auth: {
+          user: process.env.SANDGRID_USERNAME,
+          password: process.env.SANDGRID_PASSWORD,
+        },
+      })
     }
 
     // 1) create transporter
@@ -57,6 +63,9 @@ module.exports = class Email {
   }
 
   async sendPasswordReset() {
-    await this.send('passwordReset', 'Your password reset token (valid for only 10 minutes)')
+    await this.send(
+      'passwordReset',
+      'Your password reset token (valid for only 10 minutes)'
+    )
   }
 }

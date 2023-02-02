@@ -19,7 +19,7 @@
 
 - [X] Building the User Account Page.
 - [X] Allowing users to Upload images Using [Multer](https://github.com/expressjs/multer).
-- [ ] Building a Complex Email Handler.
+- [X] Building a Complex Email Handler.
 - [ ] Integrating [Stripe](https://stripe.com/) into the Back-End.
 - [ ] Processing Payments on the Front-End.
 - [ ] Modeling the Bookings and finishing its API.
