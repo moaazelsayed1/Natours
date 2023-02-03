@@ -16,7 +16,7 @@ module.exports = class Email {
         service: 'SandGrid',
         auth: {
           user: process.env.SANDGRID_USERNAME,
-          password: process.env.SANDGRID_PASSWORD,
+          pass: process.env.SANDGRID_PASSWORD,
         },
       })
     }
