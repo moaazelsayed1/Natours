@@ -7,9 +7,15 @@ const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
 const cookieParser = require('cookie-parser')
+const proxy = require("./.proxyrc.js");
+
+
+
+// The rest of your express app setup code
 
 const app = express()
 
+proxy(app);
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'views'))
 // serving static files
@@ -33,11 +39,10 @@ app.use(
       fontSrc: ["'self'", 'https:', 'data:'],
       scriptSrc: [
         "'self'",
-        'https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js',
+        'https://cdnjs.cloudflare.com/axios/1.2.1/axios.min.js',
+        'https://js.stripe.com',
       ],
       objectSrc: ["'none'"],
-      /* styleSrc: ["'self'", 'https:', 'unsafe-inline'], */
-      upgradeInsecureRequests: [],
     },
   })
 )

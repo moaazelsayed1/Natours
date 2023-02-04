@@ -21,7 +21,7 @@
 - [X] Allowing users to Upload images Using [Multer](https://github.com/expressjs/multer).
 - [X] Building a Complex Email Handler.
 - [X] Integrating [Stripe](https://stripe.com/) into the Back-End.
-- [ ] Processing Payments on the Front-End.
+- [X] Processing Payments on the Front-End.
 - [ ] Modeling the Bookings and finishing its API.
 - [ ] Deploy on [Railway](https://railway.app/).
 - [ ] Update README.
