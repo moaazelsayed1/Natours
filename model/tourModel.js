@@ -157,7 +157,7 @@ tourSchema.pre(/^find/, function (next) {
 })
 
 tourSchema.post(/^find/, function (docs, next) {
-  console.log(Date() - this.start)
+  /* console.log(Date() - this.start) */
   next()
 })
 tourSchema.pre(/^find/, function (next) {

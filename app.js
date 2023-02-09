@@ -1,21 +1,16 @@
 const path = require('path')
 const express = require('express')
 const morgan = require('morgan')
+const compression = require('compression')
 const rateLimit = require('express-rate-limit')
 const helmet = require('helmet')
 const mongoSanitize = require('express-mongo-sanitize')
 const xss = require('xss-clean')
 const hpp = require('hpp')
 const cookieParser = require('cookie-parser')
-const proxy = require("./.proxyrc.js");
-
-
-
-// The rest of your express app setup code
 
 const app = express()
 
-proxy(app);
 app.set('view engine', 'pug')
 app.set('views', path.join(__dirname, 'views'))
 // serving static files
@@ -39,14 +34,16 @@ app.use(
       fontSrc: ["'self'", 'https:', 'data:'],
       scriptSrc: [
         "'self'",
-        'https://cdnjs.cloudflare.com/axios/1.2.1/axios.min.js',
-        'https://js.stripe.com',
+        'https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js',
+        'https://js.stripe.com/v3/',
       ],
       objectSrc: ["'none'"],
+      /* styleSrc: ["'self'", 'https:', 'unsafe-inline'], */
+      upgradeInsecureRequests: [],
     },
   })
 )
-console.log(process.env.NODE_ENV)
+/* console.log(process.env.NODE_ENV) */
 // dev logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
@@ -86,10 +83,11 @@ app.use(
 // TESTING :D
 app.use((req, res, next) => {
   req.requestedAt = new Date().toISOString()
-  console.log(req.cookies)
+  /* console.log(req.cookies) */
   next()
 })
 
+app.use(compression())
 /* console.log(3) */
 // mounting the routers
 app.use('/', viewRouter)
