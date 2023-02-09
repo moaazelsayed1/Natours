@@ -3,7 +3,6 @@ import axios from 'axios'
 import { showAlert } from './alert'
 
 export const signup = async (name, email, password, passwordConfirm) => {
-  console.log('inside')
   try {
     const res = await axios({
       method: 'POST',
@@ -20,7 +19,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
       showAlert('success', 'signed up in successfully!')
       window.setTimeout(() => {
         location.assign('/')
-      }, 1500)
+      }, 1000)
     }
   } catch (err) {
     showAlert('error', err.response.data.message)
