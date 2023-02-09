@@ -38,7 +38,6 @@ app.use(
         'https://js.stripe.com/v3/',
       ],
       objectSrc: ["'none'"],
-      /* styleSrc: ["'self'", 'https:', 'unsafe-inline'], */
       upgradeInsecureRequests: [],
     },
   })
