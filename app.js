@@ -43,7 +43,7 @@ app.use(
     },
   })
 )
-/* console.log(process.env.NODE_ENV) */
+console.log(process.env.NODE_ENV)
 // dev logging
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'))
