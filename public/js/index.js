@@ -8,7 +8,7 @@ const loginForm = document.querySelector('.form--login')
 const logOutBtn = document.querySelector('.nav__el--logout')
 const userDataForm = document.querySelector('.form-user-data')
 const userPasswordForm = document.querySelector('.form-user-password')
-const signupForm = document.querySelector('.form--signup');
+const signupForm = document.querySelector('.form--signup')
 
 /* if (bookBtn) */
 /*   bookBtn.addEventListener('click', (e) => { */
@@ -18,10 +18,16 @@ const signupForm = document.querySelector('.form--signup');
 /*     bookTour(tourId) */
 /*   }) */
 /**/
+
+let formSubmitting = false
+
 if (signupForm) {
   signupForm.addEventListener('submit', (e) => {
     e.preventDefault()
-
+    
+    if (formSubmitting) return // prevent multiple submissions
+    formSubmitting = true
+    
     const name = document.getElementById('name').value
     const email = document.getElementById('email').value
     const password = document.getElementById('password').value
