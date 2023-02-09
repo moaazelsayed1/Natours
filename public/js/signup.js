@@ -23,5 +23,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
     }
   } catch (err) {
     showAlert('error', err.response.data.message)
+  } finally {
+    formSubmitting = false // reset the flag after the request is complete
   }
 }
