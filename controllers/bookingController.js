@@ -13,7 +13,7 @@ const checkIfProductExists = async (tourName) => {
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   // Find the tour by its ID
-  const tour = await Tour.findById(req.params.tourID)
+  const tour = await Tour.findById(req.params.tourId)
 
   let product = await checkIfProductExists(`${tour.name} Tour`)
   /* console.log(product) */
@@ -45,11 +45,11 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     success_url: `${req.protocol}://${req.get('host')}/my-tours/?tour=${
-      req.params.tourID
+      req.params.tourId
     }&user=${req.user.id}&price=${tour.price}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tours/${tour.slug}`,
     customer_email: req.user.email,
-    client_reference_id: req.params.tourID,
+    client_reference_id: req.params.tourId,
     mode: 'payment',
     line_items: [
       {
