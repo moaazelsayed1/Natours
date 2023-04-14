@@ -17,8 +17,12 @@ router.get('/me', userController.getMe, userController.getUser)
 
 router.patch('/updateMyPassword', authController.updatePassword)
 router.patch('/updatePassword', authController.updatePassword)
-router.patch('/updateMe', userController.uploadUserPhoto ,
-  userController.resizeUserPhoto, userController.updateMe)
+router.patch(
+  '/updateMe',
+  userController.uploadUserPhoto,
+  userController.resizeUserPhoto,
+  userController.updateMe
+)
 router.delete('/disableMe', userController.disableMe)
 
 router.use(authController.restrictTo('admin'))
